@@ -9,14 +9,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Camera playerCamera;
     [SerializeField] Transform groundCheckTransform;
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] private Transform handsTransform;
     public float mouseSensivity { get; private set; } = 100f;
     public float xRotation { get; private set; } = 0f;
     public bool isGrounded { get; private set; } = false;
     public bool isWalking { get; private set; } = false;
     public bool isJumping { get; private set; } = false;
     public bool isCrouching { get; private set; } = false;
-    
+
     [System.NonSerialized] public Vector3 jumpVelocity = Vector3.zero; // Vector3 is a struct, so I got to define as System.NonSerialized
+    public Vector3 gunRotation = Vector3.zero;
 
     private CharacterController characterController;
     private PlayerStats playerStats;
@@ -37,6 +39,12 @@ public class PlayerController : MonoBehaviour
         HandleJumpInput();
         HandleMovement();
         HandleMouseLook();
+    }
+
+    public void SetGunRotation(Vector3 _gunRotation)
+    {
+        gunRotation = _gunRotation;
+        handsTransform.localRotation = Quaternion.Euler(gunRotation);
     }
     
     void HandleJumpInput()
@@ -79,8 +87,20 @@ public class PlayerController : MonoBehaviour
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Limitation of a player's perspective in FPS mode
+
+        if (gunRotation != Vector3.zero)
+        {
+            playerCamera.transform.localRotation = Quaternion.Euler(
+                xRotation + gunRotation.x / 1.2f,
+                gunRotation.y / 1.2f,
+                gunRotation.z / 1.2f
+            );
+        }
+        else
+        {
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation,0f,0f);
+        }
         
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 
