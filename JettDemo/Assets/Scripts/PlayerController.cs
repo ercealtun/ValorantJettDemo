@@ -10,12 +10,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform groundCheckTransform;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] private Transform handsTransform;
+    
     public float mouseSensivity { get; private set; } = 100f;
     public float xRotation { get; private set; } = 0f;
     public bool isGrounded { get; private set; } = false;
     public bool isWalking { get; private set; } = false;
     public bool isJumping { get; private set; } = false;
     public bool isCrouching { get; private set; } = false;
+    public Vector3 movementVector = Vector3.zero;
+    public Vector3 inputVector = Vector3.zero;
 
     [System.NonSerialized] public Vector3 jumpVelocity = Vector3.zero; // Vector3 is a struct, so I got to define as System.NonSerialized
     public Vector3 gunRotation = Vector3.zero;
@@ -65,15 +68,15 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        float verticalInput = Input.GetAxis("Vertical"); // W - S keys 
-        float horizontalInput = Input.GetAxis("Horizontal"); // A - D keys
+        inputVector.z = Input.GetAxis("Vertical"); // W - S keys 
+        inputVector.x = Input.GetAxis("Horizontal"); // A - D keys
         isWalking = Input.GetKey(KeyCode.LeftShift); // Using left shift key for silence walk
         isCrouching = Input.GetKey(KeyCode.LeftControl); // Using left ctrl key for crouching
 
         if (isCrouching) { HandleCrouch(); }
         else { HandleStand(); }
         
-        Vector3 movementVector = Vector3.ClampMagnitude(transform.right * horizontalInput + transform.forward * verticalInput, 1.0f);  // Using ClampMagnitude I set max move speed to 1 unit
+        movementVector = Vector3.ClampMagnitude(transform.right * inputVector.x + transform.forward * inputVector.z, 1.0f);  // Using ClampMagnitude I set max move speed to 1 unit
         
         if  (isCrouching) { characterController.Move(movementVector * playerStats.crouchingMovementSpeed * Time.deltaTime); }
         else if (isWalking) { characterController.Move(movementVector * playerStats.walkingMovementSpeed * Time.deltaTime); }
