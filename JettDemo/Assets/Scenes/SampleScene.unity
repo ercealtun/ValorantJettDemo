@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &35051007
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35051008}
+  m_Layer: 0
+  m_Name: SmokeFiringPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35051008
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35051007}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.35, y: 0.071, z: 0.744}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1262887452}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &308665062
 GameObject:
   m_ObjectHideFlags: 0
@@ -10366,6 +10397,7 @@ Transform:
   - {fileID: 963194228}
   - {fileID: 1272390189}
   - {fileID: 1825356411}
+  - {fileID: 35051008}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10455,10 +10487,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDashing: 0
+  isThrowingSmoke: 0
   forwardDashParticleSystem: {fileID: 2108666029}
   backwardDashParticleSystem: {fileID: 1876244369}
   rightDashParticleSystem: {fileID: 308665065}
   leftDashParticleSystem: {fileID: 461981197}
+  smokeProjectile: {fileID: 5566471617930947845, guid: d93d6637bb61918418051879b6bc6fb7,
+    type: 3}
+  smokeFiringTransform: {fileID: 35051008}
+  playerCamera: {fileID: 963194227}
 --- !u!1 &1272390188
 GameObject:
   m_ObjectHideFlags: 0

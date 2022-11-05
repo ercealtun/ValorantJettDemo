@@ -3,6 +3,7 @@ using UnityEngine;
 public class JettController : MonoBehaviour
 {
     public bool isDashing;
+    public bool isThrowingSmoke = false;
 
     private int dashAttempts;
     private float dashStartTime;
@@ -11,22 +12,33 @@ public class JettController : MonoBehaviour
     [SerializeField] private ParticleSystem backwardDashParticleSystem;
     [SerializeField] private ParticleSystem rightDashParticleSystem;
     [SerializeField] private ParticleSystem leftDashParticleSystem;
+    [SerializeField] private GameObject smokeProjectile;
+    [SerializeField] private Transform smokeFiringTransform;
+    [SerializeField] private Camera playerCamera;
+
+    JettSmokeProjectile currentSmokeProjectile;
+    private float lastTimeSmokeEnded = 0f;
+    private float smokeDelaySeconds = 0.3f;
 
     private PlayerController playerController;
     private CharacterController characterController;
-    // Start is called before the first frame update
+    private PlayerWeapon playerWeapon;
+    
     void Start()
     {
         playerController = GetComponent<PlayerController>();
         characterController = GetComponent<CharacterController>();
+        playerWeapon = GetComponent<PlayerWeapon>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         HandleDash();
+        HandleSmoke();
     }
-
+    
+    #region Dashing
     void HandleDash()
     {
         bool isTryingToDash = Input.GetKeyDown(KeyCode.E);
@@ -104,4 +116,49 @@ public class JettController : MonoBehaviour
         
         forwardDashParticleSystem.Play(); // Default
     }
+    #endregion
+
+    #region Smoke
+
+    void HandleSmoke()
+    {
+        bool isTryingToThrowSmoke = Input.GetKeyDown(KeyCode.C);
+
+        if (isTryingToThrowSmoke && Time.time - lastTimeSmokeEnded >= smokeDelaySeconds)
+        {
+            ThrowSmoke();
+        }
+
+        if (isThrowingSmoke)
+        {
+            bool isControlled = Input.GetKey(KeyCode.C);
+            currentSmokeProjectile.SetIsControlled(isControlled);
+
+            bool isStoppingControl = Input.GetKeyUp(KeyCode.C);
+            if (isStoppingControl)
+            {
+                OnThrowingSmokeEnd();
+            }
+        }
+    }
+
+    void ThrowSmoke()
+    {
+        isThrowingSmoke = true;
+
+        GameObject _smokeProjectile = Instantiate(smokeProjectile, smokeFiringTransform.position, playerCamera.transform.rotation);
+        currentSmokeProjectile = _smokeProjectile.GetComponent<JettSmokeProjectile>();
+        currentSmokeProjectile.InitializeValues(false,playerCamera);
+    }
+
+    void OnThrowingSmokeEnd()
+    {
+        lastTimeSmokeEnded = Time.time;
+        isThrowingSmoke = false;
+        currentSmokeProjectile.SetIsControlled(false);
+        currentSmokeProjectile = null;
+    }
+    
+    #endregion
+    
 }
