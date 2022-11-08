@@ -8,7 +8,7 @@
 
 ## Gameplay Link 
 
-🔗 (https://www.youtube.com/watch?v=OgQZEC01vxw)
+🔗 [Link](https://www.youtube.com/watch?v=OgQZEC01vxw)
 
 ## In-game shot
 
