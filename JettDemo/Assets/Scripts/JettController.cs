@@ -4,6 +4,7 @@ public class JettController : MonoBehaviour
 {
     public bool isDashing;
     public bool isThrowingSmoke = false;
+    public bool isUpdrafting = false;
 
     private int dashAttempts;
     private float dashStartTime;
@@ -19,23 +20,36 @@ public class JettController : MonoBehaviour
     JettSmokeProjectile currentSmokeProjectile;
     private float lastTimeSmokeEnded = 0f;
     private float smokeDelaySeconds = 0.3f;
+    
+    private float lastTimeUpdrafted = 0.0f;
+    private float updraftHeight = 4.0f;
+    private float updraftDelaySeconds = 0.2f;
+    private int updraftAttempts = 0;
+    private int maxUpdraftAttempts = 10;
 
     private PlayerController playerController;
     private CharacterController characterController;
     private PlayerWeapon playerWeapon;
+    private PlayerStats playerStats;
     
     void Start()
     {
         playerController = GetComponent<PlayerController>();
         characterController = GetComponent<CharacterController>();
         playerWeapon = GetComponent<PlayerWeapon>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     
     void Update()
     {
         HandleDash();
-        HandleSmoke();
+
+        if (!isDashing)
+        {
+            HandleSmoke();
+            HandleUpdraft();
+        }
     }
     
     #region Dashing
@@ -159,6 +173,51 @@ public class JettController : MonoBehaviour
         currentSmokeProjectile = null;
     }
     
+    #endregion
+
+    #region Updraft
+
+    void HandleUpdraft()
+    {
+        bool isTryingToUpdraft = Input.GetKeyDown(KeyCode.Q);
+
+        if (Time.time - lastTimeUpdrafted < updraftDelaySeconds) // Checking if updraft has ended
+        {
+            if (isUpdrafting)
+            {
+                OnUpdraftEnd();
+            }
+            return;
+        }
+
+        if (isTryingToUpdraft && updraftAttempts < maxUpdraftAttempts)
+        {
+            OnUpdraftStart();
+            Updraft();
+        }
+    }
+
+    void Updraft()
+    {
+        // Updraft while updrafting
+        if (!playerController.isGrounded) { playerController.jumpVelocity.y = Mathf.Sqrt((updraftHeight / 2.5f) * -2f * playerStats.gravity); }
+        // Updraft from ground
+        else { playerController.jumpVelocity.y = Mathf.Sqrt((updraftHeight) * -2f * playerStats.gravity); }
+    }
+
+    void OnUpdraftStart()
+    {
+        isUpdrafting = true;
+        lastTimeUpdrafted = Time.time;
+        updraftAttempts++;
+        // Hide gun
+    }
+
+    void OnUpdraftEnd()
+    {
+        isUpdrafting = false;
+        // Show gun
+    }
     #endregion
     
 }
