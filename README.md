@@ -8,4 +8,4 @@
 
 ## In-game shot
 
-📸 <a href="JettDemo/Assets/Images/screenshot.png">
+📸 <a href="/JettDemo/Assets/Images/screenshot.png">
